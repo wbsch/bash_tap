@@ -1,69 +1,69 @@
 #!/usr/bin/env bash
 
-function bash_tap_on_error {
+function bashtap_on_error {
     # A command in the parent script failed, interpret this as a test failure.
-    # $bash_tap_line contains the last executed line, or an error.
-    echo -n "$bash_tap_output"
-    echo "not ok 1 - ${bash_tap_line}"
-    bash_tap_clean_tmpdir
+    # $bashtap_line contains the last executed line, or an error.
+    echo -n "$bashtap_output"
+    echo "not ok 1 - ${bashtap_line}"
+    bashtap_clean_tmpdir
 }
 
-function run_testcase {
+function bashtap_run_testcase {
     # Run each line in the parent script up to the first "exit".
-    bash_tap_output=""
-    while IFS= read -r bash_tap_line && [ "${bash_tap_line:0:4}" != "exit" ]; do
+    bashtap_output=""
+    while IFS= read -r bashtap_line && [ "${bashtap_line:0:4}" != "exit" ]; do
         # Skip shebang.
-        if [ "${bash_tap_line:0:2}" == "#!" ]; then
+        if [ "${bashtap_line:0:2}" == "#!" ]; then
             continue
         fi
 
         # Avoid recursively sourcing this script, and any helper scripts.
-        if [ "${bash_tap_line:0:10}" == ". bash_tap" ] || [ "${bash_tap_line:0:15}" == "source bash_tap" ]; then
+        if [ "${bashtap_line:0:10}" == ". bash_tap" ] || [ "${bashtap_line:0:15}" == "source bash_tap" ]; then
             continue
         fi
 
         # Include comments as-is.
-        if [ "${bash_tap_line:0:1}" == "#" ]; then
-            bash_tap_output+="$bash_tap_line"
-            bash_tap_output+=$'\n'
+        if [ "${bashtap_line:0:1}" == "#" ]; then
+            bashtap_output+="$bashtap_line"
+            bashtap_output+=$'\n'
             continue
         fi
 
         # Run file line by line.
-        if [ ! -z "$bash_tap_line" ] && [ "${bash_tap_line:0:2}" != "#!" ]; then
-            bash_tap_output+="# $ $bash_tap_line"
-            bash_tap_output+=$'\n'
+        if [ ! -z "$bashtap_line" ] && [ "${bashtap_line:0:2}" != "#!" ]; then
+            bashtap_output+="# $ $bashtap_line"
+            bashtap_output+=$'\n'
             local cmd_output
             local cmd_ret
-            cmd_output=$(eval "$bash_tap_line" 2>&1 | sed 's/^/# >>> /')
+            cmd_output=$(eval "$bashtap_line" 2>&1 | sed 's/^/# >>> /')
             cmd_ret=$?
             if [ ! -z "$cmd_output" ]; then
-                bash_tap_output+="$cmd_output"
-                bash_tap_output+=$'\n'
+                bashtap_output+="$cmd_output"
+                bashtap_output+=$'\n'
             fi
             if [ "$cmd_ret" -ne 0 ]; then
                 exit $cmd_ret
             fi
         fi
-    done <"$org_script"
+    done <"$bashtap_org_script"
 }
 
-function bash_tap_clean_tmpdir {
-    if [ ! -z "$bash_tap_tmpdir" ] && [ -d "$bash_tap_tmpdir" ]; then
-        cd "$org_pwd"
-        rm -rf "$bash_tap_tmpdir"
+function bashtap_clean_tmpdir {
+    if [ ! -z "$bashtap_tmpdir" ] && [ -d "$bashtap_tmpdir" ]; then
+        cd "$bashtap_org_pwd"
+        echo rm -rf "$bashtap_tmpdir"
     fi
 }
 
-function get_absolute_path {
+function bashtap_get_absolute_path {
     # NOTE: No actual thought put into this. Might break. Horribly.
     # Using this instead of readlink/realpath for OSX compatibility.
     echo $(cd "$(dirname "$1")" && pwd)/$(basename "$1")
 }
 
 
-org_pwd=$(pwd)
-org_script=$(get_absolute_path "$0")
+bashtap_org_pwd=$(pwd)
+bashtap_org_script=$(bashtap_get_absolute_path "$0")
 
 if [ "${0:(-2)}" == ".t" ] || [ "$1" == "-t" ]; then
     # Make sure any failing commands are caught.
@@ -71,36 +71,35 @@ if [ "${0:(-2)}" == ".t" ] || [ "$1" == "-t" ]; then
     set -o pipefail
 
     # TAP header. Hardcoded number of tests, 1.
-    # We could count each executed line as a test instead...
     echo "1..1"
 
     # Output TAP failure on early exit.
-    trap bash_tap_on_error EXIT
+    trap bashtap_on_error EXIT
 
     # The different calls to mktemp are necessary for OSX compatibility.
-    bash_tap_tmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'bash_tap')
-    if [ ! -z "$bash_tap_tmpdir" ]; then
-        cd "$bash_tap_tmpdir"
+    bashtap_tmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'bash_tap')
+    if [ ! -z "$bashtap_tmpdir" ]; then
+        cd "$bashtap_tmpdir"
     else
-        bash_tap_line="Unable to create temporary directory."
+        bashtap_line="Unable to create temporary directory."
         exit 1
     fi
 
     # Scripts sourced before bash_tap.sh may declare this function.
-    if declare -f bash_tap_setup >/dev/null; then
-        bash_tap_setup
+    if declare -f bashtap_setup >/dev/null; then
+        bashtap_setup
     fi
 
     # Run test file interpreting failing commands as a test failure.
-    run_testcase && echo "ok 1"
+    bashtap_run_testcase && echo "ok 1"
 
     # Since we're in a sourced file and just ran the parent script,
     # exit without running it a second time.
     trap - EXIT
-    bash_tap_clean_tmpdir
+    bashtap_clean_tmpdir
     exit
 else
-    if declare -f bash_tap_setup >/dev/null; then
-        bash_tap_setup
+    if declare -f bashtap_setup >/dev/null; then
+        bashtap_setup
     fi
 fi
