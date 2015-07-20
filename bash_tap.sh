@@ -51,7 +51,7 @@ function bashtap_run_testcase {
 function bashtap_clean_tmpdir {
     if [ ! -z "$bashtap_tmpdir" ] && [ -d "$bashtap_tmpdir" ]; then
         cd "$bashtap_org_pwd"
-        echo rm -rf "$bashtap_tmpdir"
+        rm -rf "$bashtap_tmpdir"
     fi
 }
 
