@@ -18,7 +18,7 @@ function bashtap_run_testcase {
         fi
 
         # Avoid recursively sourcing this script, and any helper scripts.
-        if [ "${bashtap_line:0:10}" == ". bash_tap" ] || [ "${bashtap_line:0:15}" == "source bash_tap" ]; then
+        if [[ "$bashtap_line" =~ ^(\.|source).*(/|[[:blank:]])bash_tap[^/]*$ ]]; then
             continue
         fi
 
