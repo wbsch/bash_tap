@@ -1,0 +1,4 @@
+Basic tests of bash_tap.sh's functionality.
+
+Best run like this, or with any other TAP consumer:
+    $ prove -v runall.sh

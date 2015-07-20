@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# Try
-#  $ prove -v ./runall.sh
 
 rc=0
 count=0
