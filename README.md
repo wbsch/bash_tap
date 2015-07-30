@@ -75,7 +75,7 @@ Copy & paste is often enough to make `bash_tap.sh` run these as tests.
 ## HOW
 All you need for writing your own tests is `bash_tap.sh`. It is important not to rename it since there is some deeply disturbing magic involved. Additionally, naming helper scripts anything but `bash_tap_HELPERNAME.sh` will lead to problems.
 
-Included in the repo's examples folder is `bash_tap_tw.sh`, a file used in [Taskwarrior](http://taskwarrior.org)'s test suite. It shows how to extend `bash_tap.sh` for your own usage should plain Bash and installed commands not suffice.
+Included in the repo's `misc` folder is `bash_tap_tw.sh`, a file used in [Taskwarrior](http://taskwarrior.org)'s test suite. It shows how to extend `bash_tap.sh` for your own usage should plain Bash and installed commands not suffice.
 
 
 
