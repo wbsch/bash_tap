@@ -22,7 +22,6 @@ function setup_taskrc {
     export TASKDATA=.
 
     echo 'confirmation=off'               > taskrc
-    echo 'dateformat=m/d/Y'               >> taskrc
     echo 'color.debug=rgb025'             >> taskrc
     echo 'color.header=rgb025'            >> taskrc
     echo 'color.footer=rgb025'            >> taskrc
@@ -36,7 +35,7 @@ function find_task_binary {
     for t in "${bashtap_org_pwd}/task" "${bashtap_org_pwd}/src/task" "${bashtap_org_pwd}/../task" "${bashtap_org_pwd}/../src/task" "${bashtap_org_pwd}/../build/src/task"; do
         if [ -f "$t" ] && [ -x "$t" ]; then
             t_abs=$(bashtap_get_absolute_path "$t")
-            eval "function task { ${t_abs} rc:taskrc \$@; }"
+            eval "function task { ${t_abs} rc:taskrc \"\$@\"; }"
             return 0
         fi
     done
