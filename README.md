@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/wbsch/bash_tap.svg?branch=master)](https://travis-ci.org/wbsch/bash_tap)
+
+
+
 ## WHAT
 `bash_tap.sh` is a simple Bash script to [TAP](https://testanything.org/) output converter. Any command exiting with a non-zero exit code, even if it is part | of | a | piped | command, makes `bash_tap.sh` output `not ok` TAP information.
 

@@ -3,6 +3,8 @@
 rc=0
 count=0
 
+cd $(dirname "$0")
+
 echo -n "1.."
 ls -l test_*.t | wc -l
 
