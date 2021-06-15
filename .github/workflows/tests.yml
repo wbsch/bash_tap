@@ -1,0 +1,16 @@
+name: tests
+on: [push, pull_request]
+jobs:
+  tests:
+    strategy:
+      matrix:
+        include:
+          - name: "Ubuntu Latest"
+            runner: ubuntu-latest
+          - name: "MacOS Latest"
+            runner: macos-latest
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: ./tests/runall.sh

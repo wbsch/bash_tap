@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/wbsch/bash_tap.svg?branch=master)](https://travis-ci.org/wbsch/bash_tap)
+[![Build Status](https://github.com/wbsch/bash_tap/actions/workflows/tests.yml/badge.svg)](https://github.com/wbsch/bash_tap/actions/workflows/tests.yml)
 
 
 
